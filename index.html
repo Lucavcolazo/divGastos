@@ -16,7 +16,6 @@
     <div class="hero-img" id="hero-img" role="img" aria-label="Una mano presionando la tecla enter"></div>
     <nav class="topbar">
       <span><b>divisor</b>/gastos</span>
-      <a href="#calc">calculadora ↓</a>
     </nav>
     <div class="hero-copy" id="hero-copy">
       <h1>Divisor<br>de gastos</h1>
@@ -25,75 +24,45 @@
   </header>
 
   <main class="calc-section" id="calc">
-    <!-- resumen: lo que se está cargando y los resultados -->
-    <section class="live">
-      <div>
-        <div class="entry-meta" id="h-meta"></div>
-        <div class="entry-big"><span class="cur">$</span><span id="h-amt">0</span><span class="caret"></span></div>
-      </div>
-      <div class="results">
-        <div class="res-row">
-          <span class="label">total del mes</span>
-          <span class="res-value roll" id="r-total">$ 0</span>
-        </div>
-        <div class="res-row half">
-          <span class="split">
-            <span class="label">÷</span>
-            <button class="split-btn" type="button" data-split="-1" aria-label="Dividir entre menos personas">−</button>
-            <span class="split-n" id="split-n" aria-live="polite">2</span>
-            <button class="split-btn" type="button" data-split="1" aria-label="Dividir entre más personas">+</button>
-            <span class="label">· cada uno</span>
-          </span>
-          <span class="res-value roll" id="r-half">$ 0</span>
-        </div>
-      </div>
-    </section>
-
     <section class="desk">
-      <!-- impresora + ticket -->
-      <div class="printer-col">
+      <!-- resultados, a los costados del papel -->
+      <div class="res res-total">
+        <span class="label">total del mes</span>
+        <span class="res-value roll" id="r-total">$ 0</span>
+      </div>
+      <div class="res res-half">
+        <span class="split">
+          <span class="label">÷</span>
+          <button class="split-btn" type="button" data-split="-1" aria-label="Dividir entre menos personas">−</button>
+          <span class="split-n" id="split-n" aria-live="polite">2</span>
+          <button class="split-btn" type="button" data-split="1" aria-label="Dividir entre más personas">+</button>
+          <span class="label">· cada uno</span>
+        </span>
+        <span class="res-value roll" id="r-half">$ 0</span>
+      </div>
+
+      <!-- calculadora impresora: el papel sale de arriba y cae por detrás -->
+      <div class="machine">
+        <canvas class="tape" id="tape" aria-hidden="true"></canvas>
+        <div class="cutter" aria-hidden="true"></div>
+
         <div class="printer" id="printer">
           <div class="pr-top">
-            <span class="pr-brand"><b>DG-1</b> · IMPRESORA</span>
-            <span class="pr-status"><span class="pr-lcd" id="pr-lcd">LISTO</span><span class="pr-led"></span></span>
+            <span class="brand"><b>DG-1</b> · DIVISOR</span>
+            <span class="pr-status">
+              <span class="solar" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <span class="pr-lcd" id="pr-lcd" aria-live="polite">LISTO</span>
+              <span class="pr-led"></span>
+            </span>
           </div>
           <div class="pr-row">
             <div class="pr-grille" id="pr-grille" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
             <span class="pr-hint">scroll ↓ acá para cortar</span>
-          </div>
-          <div class="pr-slot" aria-hidden="true"></div>
-        </div>
-        <div class="paper-clip">
-          <div class="paper-feed waiting" id="feed">
-            <div class="paper-tail" aria-hidden="true"></div>
-            <div class="paper" id="paper">
-              <div class="p-head">
-                <div class="p-title">DIVISOR DE GASTOS</div>
-                <div class="p-sub" id="p-month"></div>
-              </div>
-              <hr class="dash">
-              <ol class="p-list" id="p-list"></ol>
-              <div class="p-empty" id="p-empty">*** sin gastos todavía ***</div>
-              <hr class="dash">
-              <div class="p-total"><span>TOTAL</span><span id="p-total">$ 0</span></div>
-              <div class="p-total half"><span>C/U ÷ <span class="split-label">2</span></span><span id="p-half">$ 0</span></div>
-              <div class="barcode" aria-hidden="true"></div>
-              <div class="p-bottom">
-                <span id="p-count">0 items</span>
-                <button class="p-cut" id="cut" type="button">cortar ticket</button>
-              </div>
-            </div>
+            <button class="pr-cut" id="cut" type="button">cortar</button>
           </div>
         </div>
-      </div>
 
-      <!-- calculadora -->
-      <div class="calc-col">
         <div class="calc" role="group" aria-label="Calculadora">
-          <div class="calc-top">
-            <span class="brand"><b>DG-1</b> · DIVISOR</span>
-            <span class="solar" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          </div>
           <div class="screen" id="screen">
             <div class="scr-top"><span id="s-cat"></span><span id="s-mode">nuevo</span></div>
             <input class="scr-name" id="s-name" placeholder="concepto (ej: luz, netflix)" autocomplete="off" maxlength="40" aria-label="Concepto">
@@ -120,6 +89,9 @@
           <div class="hint">teclado: números · enter imprime · esc limpia</div>
         </div>
       </div>
+
+      <!-- el ticket se dibuja en el canvas; esta lista es para teclado y lectores de pantalla -->
+      <ol class="sr-only" id="p-list" aria-label="Gastos del ticket"></ol>
     </section>
   </main>
 
