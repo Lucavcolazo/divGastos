@@ -1,0 +1,10 @@
+/* layout de la mesa: ticket a la izquierda, calculadora a la derecha */
+.desk { display: grid; grid-template-columns: 420px 360px; justify-content: center; gap: clamp(40px, 8vw, 130px); align-items: start; padding: 24px 40px 40px; }
+.printer-col { position: relative; padding-bottom: 40px; }
+.calc-col { position: sticky; top: 24px; }
+
+@media (max-width: 1000px) {
+  .desk { grid-template-columns: 1fr; justify-items: center; gap: 48px; padding: 8px 16px 24px; }
+  .calc-col { position: static; order: -1; width: 100%; max-width: 380px; }
+  .printer-col { width: 100%; max-width: 420px; }
+}

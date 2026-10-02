@@ -1,0 +1,41 @@
+.calc-section { position: relative; z-index: 1; padding-bottom: 72px; background: radial-gradient(ellipse 70% 45% at 50% 40%, rgba(255, 255, 255, 0.1), transparent 70%); }
+
+.live { display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; align-items: end; padding: 72px 40px 56px; max-width: 1400px; margin: 0 auto; }
+.label { font-size: 12px; color: var(--muted-w); }
+
+/* lo que se está cargando */
+.entry-meta { font-size: 15px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-big { font-size: clamp(44px, 8vw, 120px); font-weight: 500; letter-spacing: -0.055em; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-big .cur { color: var(--muted-w); font-weight: 400; margin-right: 0.12em; }
+.caret { display: inline-block; width: 0.07em; height: 0.82em; background: var(--white); margin-left: 0.06em; vertical-align: -0.04em; animation: blink 1s steps(1) infinite; }
+
+/* resultados */
+.results { justify-self: end; width: 100%; max-width: 480px; }
+
+/* Cada fila: título/selector arriba a la izquierda, monto abajo a la derecha.
+   Así el selector de división no se mueve sin importar el largo del número. */
+.res-row { display: grid; row-gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line-w); }
+.res-row:first-child { border-top: 1px solid var(--white); }
+.res-row > :first-child { display: flex; align-items: center; min-height: 26px; }
+.res-value { justify-self: end; white-space: nowrap; font-size: clamp(26px, 2.8vw, 40px); font-weight: 500; letter-spacing: -0.04em; line-height: 1.15; color: var(--pale); font-variant-numeric: tabular-nums; }
+.res-row.half .res-value { color: var(--white); font-weight: 600; }
+
+/* Rodillo: cada dígito que cambia se desliza (sube si el monto sube, baja si baja) */
+.roll { white-space: pre; }
+.roll-ch { display: inline-block; position: relative; overflow: hidden; vertical-align: bottom; }
+.roll-old, .roll-new { display: block; animation-duration: .7s; animation-timing-function: cubic-bezier(.22, .8, .24, 1); animation-fill-mode: both; animation-delay: var(--delay, 0ms); }
+.roll-old { position: absolute; inset: 0; animation-name: roll-out; }
+.roll-new { animation-name: roll-in; }
+@keyframes roll-out { to { transform: translateY(calc(-100% * var(--dir))); opacity: 0; } }
+@keyframes roll-in { from { transform: translateY(calc(100% * var(--dir))); opacity: 0; } }
+
+.split { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.split-btn { width: 26px; height: 26px; padding: 0; border-radius: 8px; border: 1px solid var(--line-w); background: transparent; color: var(--white); font-size: 15px; line-height: 1; transition: background .15s, border-color .15s; }
+.split-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--white); }
+.split-btn:disabled { opacity: .35; cursor: default; background: transparent; border-color: var(--line-w); }
+.split-n { font-size: 16px; font-weight: 600; min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 1000px) {
+  .live { grid-template-columns: 1fr; gap: 32px; padding: 48px 16px 32px; }
+  .results { justify-self: stretch; max-width: none; }
+}

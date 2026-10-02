@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0272fd">
+  <meta name="description" content="Cargá los gastos del mes y dividilos entre los que viven en el depto.">
+  <title>Divisor de gastos</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="hero" id="hero">
+    <div class="hero-img" id="hero-img" role="img" aria-label="Una mano presionando la tecla enter"></div>
+    <nav class="topbar">
+      <span><b>divisor</b>/gastos</span>
+      <a href="#calc">calculadora ↓</a>
+    </nav>
+    <div class="hero-copy" id="hero-copy">
+      <h1>Divisor<br>de gastos</h1>
+      <a class="cue" href="#calc"><span class="keycap">↵</span> enter para cargar gastos</a>
+    </div>
+  </header>
+
+  <main class="calc-section" id="calc">
+    <!-- resumen: lo que se está cargando y los resultados -->
+    <section class="live">
+      <div>
+        <div class="entry-meta" id="h-meta"></div>
+        <div class="entry-big"><span class="cur">$</span><span id="h-amt">0</span><span class="caret"></span></div>
+      </div>
+      <div class="results">
+        <div class="res-row">
+          <span class="label">total del mes</span>
+          <span class="res-value roll" id="r-total">$ 0</span>
+        </div>
+        <div class="res-row half">
+          <span class="split">
+            <span class="label">÷</span>
+            <button class="split-btn" type="button" data-split="-1" aria-label="Dividir entre menos personas">−</button>
+            <span class="split-n" id="split-n" aria-live="polite">2</span>
+            <button class="split-btn" type="button" data-split="1" aria-label="Dividir entre más personas">+</button>
+            <span class="label">· cada uno</span>
+          </span>
+          <span class="res-value roll" id="r-half">$ 0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="desk">
+      <!-- impresora + ticket -->
+      <div class="printer-col">
+        <div class="printer" id="printer">
+          <div class="pr-top">
+            <span class="pr-brand"><b>DG-1</b> · IMPRESORA</span>
+            <span class="pr-status"><span class="pr-lcd" id="pr-lcd">LISTO</span><span class="pr-led"></span></span>
+          </div>
+          <div class="pr-row">
+            <div class="pr-grille" id="pr-grille" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="pr-hint">scroll ↓ acá para cortar</span>
+          </div>
+          <div class="pr-slot" aria-hidden="true"></div>
+        </div>
+        <div class="paper-clip">
+          <div class="paper-feed waiting" id="feed">
+            <div class="paper-tail" aria-hidden="true"></div>
+            <div class="paper" id="paper">
+              <div class="p-head">
+                <div class="p-title">DIVISOR DE GASTOS</div>
+                <div class="p-sub" id="p-month"></div>
+              </div>
+              <hr class="dash">
+              <ol class="p-list" id="p-list"></ol>
+              <div class="p-empty" id="p-empty">*** sin gastos todavía ***</div>
+              <hr class="dash">
+              <div class="p-total"><span>TOTAL</span><span id="p-total">$ 0</span></div>
+              <div class="p-total half"><span>C/U ÷ <span class="split-label">2</span></span><span id="p-half">$ 0</span></div>
+              <div class="barcode" aria-hidden="true"></div>
+              <div class="p-bottom">
+                <span id="p-count">0 items</span>
+                <button class="p-cut" id="cut" type="button">cortar ticket</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- calculadora -->
+      <div class="calc-col">
+        <div class="calc" role="group" aria-label="Calculadora">
+          <div class="calc-top">
+            <span class="brand"><b>DG-1</b> · DIVISOR</span>
+            <span class="solar" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="screen" id="screen">
+            <div class="scr-top"><span id="s-cat"></span><span id="s-mode">nuevo</span></div>
+            <input class="scr-name" id="s-name" placeholder="concepto (ej: luz, netflix)" autocomplete="off" maxlength="40" aria-label="Concepto">
+            <div class="scr-amt" aria-live="polite"><span id="s-amt">0</span></div>
+          </div>
+          <div class="cats" id="cats"></div>
+          <div class="keys" id="keys">
+            <button class="key" type="button" data-k="7">7</button>
+            <button class="key" type="button" data-k="8">8</button>
+            <button class="key" type="button" data-k="9">9</button>
+            <button class="key fn" type="button" data-k="back" aria-label="Borrar último dígito">⌫</button>
+            <button class="key" type="button" data-k="4">4</button>
+            <button class="key" type="button" data-k="5">5</button>
+            <button class="key" type="button" data-k="6">6</button>
+            <button class="key fn" type="button" data-k="clear" aria-label="Limpiar">C</button>
+            <button class="key" type="button" data-k="1">1</button>
+            <button class="key" type="button" data-k="2">2</button>
+            <button class="key" type="button" data-k="3">3</button>
+            <button class="key add" type="button" data-k="add" aria-label="Agregar gasto"><span>↵</span><small id="add-label">imprimir</small></button>
+            <button class="key" type="button" data-k="0">0</button>
+            <button class="key small" type="button" data-k="000">000</button>
+            <button class="key" type="button" data-k=",">,</button>
+          </div>
+          <div class="hint">teclado: números · enter imprime · esc limpia</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-msg"></span>
+    <button type="button" class="toast-action"></button>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
