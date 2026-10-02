@@ -1,10 +1,30 @@
-/* layout de la mesa: ticket a la izquierda, calculadora a la derecha */
-.desk { display: grid; grid-template-columns: 420px 360px; justify-content: center; gap: clamp(40px, 8vw, 130px); align-items: start; padding: 24px 40px 40px; }
-.printer-col { position: relative; padding-bottom: 40px; }
-.calc-col { position: sticky; top: 24px; }
+/* La mesa: el aparato al centro y los resultados a los costados del papel, en la franja
+   que queda arriba del aparato. Todo junto entra en una pantalla de ~800 px de alto. */
+.desk {
+  /* alto libre para el papel que sale del aparato; en pantallas bajas el papel puede
+     asomar por arriba de la sección, pero el aparato entero sigue entrando */
+  --tape-zone: clamp(170px, 100svh - 650px, 232px);
+  display: grid;
+  grid-template-columns: 1fr 380px 1fr;
+  grid-template-rows: var(--tape-zone) auto;
+  grid-template-areas: "total . half" ". machine .";
+  column-gap: clamp(32px, 4vw, 64px);
+  padding: 8px 40px 40px;
+}
+.res-total { grid-area: total; }
+.res-half { grid-area: half; }
+.machine { grid-area: machine; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 @media (max-width: 1000px) {
-  .desk { grid-template-columns: 1fr; justify-items: center; gap: 48px; padding: 8px 16px 24px; }
-  .calc-col { position: static; order: -1; width: 100%; max-width: 380px; }
-  .printer-col { width: 100%; max-width: 420px; }
+  .desk {
+    --tape-zone: 220px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto var(--tape-zone) auto;
+    grid-template-areas: "total half" ". ." "machine machine";
+    column-gap: 16px;
+    padding: 8px 16px 32px;
+  }
+  .machine { justify-self: center; width: 100%; max-width: 380px; }
 }

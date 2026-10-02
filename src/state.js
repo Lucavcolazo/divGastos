@@ -7,6 +7,7 @@ export const CATEGORIES = [
   { id: 'Ocio', label: 'ocio' },
   { id: 'Otros', label: 'otros' },
 ];
+export const SPLIT_MIN = 2; // entre 1 "cada uno" sería igual al total
 export const SPLIT_MAX = 20;
 const DEFAULT_SPLIT = 2;
 
@@ -19,7 +20,7 @@ const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2
 export const state = {
   /** @type {{ id: string, name: string, cat: string, amount: number }[]} */
   items: loadItems().filter(isValidItem).map(normalize),
-  split: loadSplit(DEFAULT_SPLIT, SPLIT_MAX),
+  split: loadSplit(DEFAULT_SPLIT, SPLIT_MIN, SPLIT_MAX),
   /** Lo que se está tipeando en la calculadora. `amount` es texto ("1234,5"). */
   entry: { name: '', cat: CATEGORIES[0].id, amount: '', editing: null },
 };
@@ -62,7 +63,7 @@ export function replaceItems(items) {
 /* ---------- división ---------- */
 
 export function setSplit(n) {
-  const next = Math.min(SPLIT_MAX, Math.max(1, n));
+  const next = Math.min(SPLIT_MAX, Math.max(SPLIT_MIN, n));
   if (next === state.split) return;
   state.split = next;
   saveSplit(next);

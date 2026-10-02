@@ -3,9 +3,9 @@
   --blue-deep: #0157c9;
   --pale: #cfe5fe;
   --ink: #0150c0;
-  --ink-muted: rgba(1, 80, 192, 0.55);
+  --ink-muted: #2b5aa6;   /* sólido: los textos chicos sobre la carcasa clara se leen bien */
   --white: #ffffff;
-  --muted-w: rgba(255, 255, 255, 0.68);
+  --muted-w: rgba(255, 255, 255, 0.84);
   --line-w: rgba(255, 255, 255, 0.3);
   --paper: #fdfeff;
   --font: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;

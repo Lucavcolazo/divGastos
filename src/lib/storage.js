@@ -17,10 +17,10 @@ export function saveItems(items) {
   try { localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); } catch {}
 }
 
-export function loadSplit(fallback, max) {
+export function loadSplit(fallback, min, max) {
   try {
     const n = parseInt(localStorage.getItem(SPLIT_KEY), 10);
-    return n >= 1 && n <= max ? n : fallback;
+    return n >= min && n <= max ? n : fallback;
   } catch {
     return fallback;
   }

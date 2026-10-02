@@ -1,90 +1,72 @@
-/* ---------- impresora ---------- */
-.printer {
-  position: relative; z-index: 3;
-  width: 420px; height: 116px;
-  padding: 16px 22px;
-  border-radius: 24px 24px 16px 16px;
-  background: linear-gradient(172deg, #ffffff 0%, #e4f1ff 45%, #a9d0fb 100%);
-  box-shadow: 0 34px 44px -30px rgba(0, 25, 90, 0.6), 0 5px 0 #6aa9f0, inset 0 2px 0 #fff, inset 0 -3px 0 rgba(1, 87, 201, 0.15);
+/* ---------- calculadora impresora: un solo aparato ---------- */
+.machine {
+  position: relative;
+  isolation: isolate;
   color: var(--ink);
+}
+/* la carcasa va en una capa propia para que el papel (canvas) quede detrás */
+.machine::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  border-radius: 34px 34px 30px 30px;
+  background: linear-gradient(170deg, #ffffff 0%, #e6f2ff 30%, #c4e0fd 100%);
+  box-shadow: 0 50px 70px -36px rgba(0, 25, 90, 0.65), 0 5px 0 #6aa9f0, inset 0 2px 0 #fff, inset 0 -3px 0 rgba(1, 87, 201, 0.16);
+}
+.machine > :not(.tape) { position: relative; z-index: 2; }
+
+/* el papel: sale de la ranura del borde de arriba (ver features/tape/) */
+.machine > .tape {
+  position: absolute; z-index: 0;
+  left: 50%; bottom: calc(100% - 28px);
+  width: 300px; height: 260px;
+  transform: translateX(-50%);
+  touch-action: none;
+}
+/* tapa transparente con la cuchilla dentada: el papel se ve a través */
+.machine > .cutter {
+  position: absolute; z-index: 2;
+  left: 50%; bottom: calc(100% - 2px);
+  width: 268px; height: 42px;
+  transform: translateX(-50%);
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, rgba(1, 50, 140, 0.16), rgba(1, 50, 140, 0.3));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -2px 4px rgba(0, 25, 90, 0.18);
+  pointer-events: none;
+  --t: 4px;
+  -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / calc(2 * var(--t)) var(--t) repeat-x, linear-gradient(#000 0 0) 0 var(--t) / 100% 100% no-repeat;
+          mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / calc(2 * var(--t)) var(--t) repeat-x, linear-gradient(#000 0 0) 0 var(--t) / 100% 100% no-repeat;
+}
+
+/* ---------- cabezal de la impresora ---------- */
+.printer {
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid rgba(1, 87, 201, 0.16);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
   touch-action: none; cursor: grab; user-select: none;
 }
 .printer:active { cursor: grabbing; }
 .printer.is-printing { animation: buzz .09s linear infinite; }
 @keyframes buzz { 50% { transform: translateY(0.6px); } }
 
-.pr-top { display: flex; justify-content: space-between; align-items: center; }
-.pr-brand { font-size: 11px; letter-spacing: 0.14em; color: var(--ink-muted); }
-.pr-brand b { color: var(--ink); font-weight: 600; }
+.pr-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.brand { font-size: 11px; letter-spacing: 0.14em; color: var(--ink-muted); white-space: nowrap; }
+.brand b { color: var(--ink); font-weight: 600; }
 .pr-status { display: flex; align-items: center; gap: 10px; }
-.pr-lcd { min-width: 110px; padding: 3px 9px; border-radius: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-align: center; background: linear-gradient(180deg, var(--blue-deep), var(--blue)); color: var(--white); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); }
-.pr-led { width: 8px; height: 8px; border-radius: 50%; background: var(--pale); box-shadow: inset 0 0 0 1px rgba(1, 80, 192, 0.25); }
+.solar { display: grid; grid-template-columns: repeat(4, 12px); gap: 2px; padding: 3px; border-radius: 4px; background: #013a8c; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4); }
+.solar i { height: 10px; border-radius: 1px; background: linear-gradient(180deg, #0a5fd8, #0247ad); }
+.pr-lcd { min-width: 112px; padding: 3px 9px; border-radius: 6px; font-size: 11px; letter-spacing: 0.08em; text-align: center; background: linear-gradient(180deg, var(--blue-deep), var(--blue)); color: var(--white); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); white-space: nowrap; }
+.pr-led { width: 8px; height: 8px; border-radius: 50%; background: var(--pale); box-shadow: inset 0 0 0 1px rgba(1, 80, 192, 0.3); }
 .printer.is-printing .pr-led { background: var(--blue); box-shadow: 0 0 0 3px rgba(2, 114, 253, 0.25); animation: blink .25s steps(1) infinite; }
 
-.pr-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
-.pr-grille { display: flex; gap: 5px; }
-.pr-grille i { width: 3px; height: 14px; border-radius: 2px; background: rgba(1, 80, 192, 0.16); transition: background .1s; }
+.pr-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.pr-grille { display: flex; gap: 4px; }
+.pr-grille i { width: 3px; height: 12px; border-radius: 2px; background: rgba(1, 80, 192, 0.2); transition: background .1s; }
 .pr-grille i.on { background: var(--blue); }
-.pr-hint { font-size: 10px; color: var(--ink-muted); letter-spacing: 0.04em; }
-.pr-slot { position: absolute; left: 30px; right: 30px; bottom: 20px; height: 10px; border-radius: 6px; background: linear-gradient(180deg, #013a8c, var(--blue-deep)); box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.4), 0 1px 0 #fff; }
+.pr-hint { flex: 1; font-size: 11px; color: var(--ink-muted); letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pr-cut { padding: 2px 9px; border: 1px solid rgba(1, 80, 192, 0.35); border-radius: 6px; background: rgba(255, 255, 255, 0.5); color: var(--ink); font-size: 11px; }
+.pr-cut:hover { background: #fff; border-color: var(--ink); }
 
-/* ---------- papel: se recorta justo en la ranura para que parezca que sale de ahí ---------- */
-.paper-clip { position: relative; z-index: 4; width: 344px; margin: -25px auto 0; clip-path: inset(0 -80px -140px -80px); }
-.paper-feed { position: relative; filter: drop-shadow(0 14px 16px rgba(0, 30, 100, 0.3)) drop-shadow(0 2px 2px rgba(0, 30, 100, 0.12)); }
-.paper-feed.waiting { transform: translateY(-101%); }
-.paper-feed.is-torn { transition: transform .65s cubic-bezier(.55, 0, .8, .2), opacity .65s !important; transform: translateY(60vh) rotate(7deg) !important; opacity: 0; }
-
-/* papel en blanco que sigue dentro de la impresora (se ve al tirar del ticket) */
-.paper-tail { position: absolute; left: 0; right: 0; bottom: 100%; height: 320px; background: var(--paper); }
-
-.paper {
-  position: relative;
-  padding: 26px 24px 40px;
-  background: var(--paper);
-  color: var(--ink);
-  --s: 9px;
-  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--s)) 100%;
-          mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--s)) 100%;
-}
-.paper::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 18px; background: linear-gradient(rgba(1, 60, 150, 0.22), transparent); pointer-events: none; }
-.paper-feed.is-pulling .paper::before { opacity: 0; }
-
-.p-head { text-align: center; }
-.p-title { font-size: 18px; font-weight: 600; letter-spacing: 0.04em; }
-.p-sub { font-size: 11px; color: var(--ink-muted); }
-.dash { border: 0; border-top: 1px dashed rgba(1, 80, 192, 0.4); margin: 14px 0; }
-
-.p-list { list-style: none; margin: 0; padding: 0; }
-.p-item { position: relative; padding: 7px 24px 7px 6px; margin: 0 -6px; border-radius: 6px; cursor: pointer; transition: background .15s; }
-.p-item:hover { background: rgba(2, 114, 253, 0.06); }
-.p-item.is-editing { background: rgba(2, 114, 253, 0.12); }
-.p-item.is-printing .p-line { animation: printline .42s steps(16, end) both .12s; }
-.p-item.is-printing .p-meta { animation: printline .32s steps(12, end) both .5s; }
-@keyframes printline { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-.p-item.is-removing { overflow: hidden; opacity: 0; padding-top: 0; padding-bottom: 0; transition: height .3s, opacity .2s, padding .3s; }
-
-.p-line { display: flex; align-items: baseline; gap: 6px; font-size: 13px; }
-.p-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
-.p-dots { flex: 1; min-width: 12px; border-bottom: 1px dotted rgba(1, 80, 192, 0.4); transform: translateY(-4px); }
-.p-amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.p-meta { display: flex; justify-content: space-between; margin-top: 1px; font-size: 10.5px; color: var(--ink-muted); }
-.p-del { position: absolute; right: 2px; top: 5px; width: 20px; height: 20px; padding: 0; border: 0; background: none; color: var(--ink-muted); font-size: 15px; line-height: 1; opacity: 0; transition: opacity .15s, color .15s; }
-.p-item:hover .p-del, .p-item:focus-within .p-del, .p-item.is-editing .p-del { opacity: 1; }
-.p-del:hover { color: var(--ink); }
-@media (hover: none) { .p-del { opacity: 1; } }
-
-.p-empty { padding: 18px 0; font-size: 12px; text-align: center; color: var(--ink-muted); }
-.p-total { display: flex; justify-content: space-between; padding-right: 24px; font-size: 17px; font-weight: 600; }
-.p-total.half { margin-top: 2px; font-size: 13px; font-weight: 500; }
-.barcode { height: 30px; margin: 16px 0 8px; opacity: .9; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px); }
-.p-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; color: var(--ink-muted); }
-.p-cut { padding: 0; border: 0; background: none; color: var(--ink-muted); font-size: 10.5px; text-decoration: underline; text-underline-offset: 2px; }
-.p-cut:hover { color: var(--ink); }
-
-@media (max-width: 1000px) {
-  .printer { width: 100%; }
-  .paper-clip { width: calc(100% - 64px); }
-}
 @media (max-width: 420px) {
   .pr-lcd { min-width: 0; }
+  .solar { display: none; }
 }
